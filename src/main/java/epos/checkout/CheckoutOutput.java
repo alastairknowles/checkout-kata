@@ -1,14 +1,14 @@
 package epos.checkout;
 
-public class Checkout {
+public class CheckoutOutput {
 
     private String item;
 
-    private Long unitPrice;
+    private Long price;
 
     private Long quantity;
 
-    private Long discount;
+    private Long discount = 0L;
 
     private Long total;
 
@@ -16,17 +16,17 @@ public class Checkout {
         return item;
     }
 
-    public Checkout setItem(String item) {
+    public CheckoutOutput setItem(String item) {
         this.item = item;
         return this;
     }
 
-    public Long getUnitPrice() {
-        return unitPrice;
+    public Long getPrice() {
+        return price;
     }
 
-    public Checkout setUnitPrice(Long unitPrice) {
-        this.unitPrice = unitPrice;
+    public CheckoutOutput setPrice(Long price) {
+        this.price = price;
         return this;
     }
 
@@ -34,7 +34,7 @@ public class Checkout {
         return quantity;
     }
 
-    public Checkout setQuantity(Long quantity) {
+    public CheckoutOutput setQuantity(Long quantity) {
         this.quantity = quantity;
         return this;
     }
@@ -43,7 +43,7 @@ public class Checkout {
         return discount;
     }
 
-    public Checkout setDiscount(Long discount) {
+    public CheckoutOutput setDiscount(Long discount) {
         this.discount = discount;
         return this;
     }
@@ -52,7 +52,7 @@ public class Checkout {
         return total;
     }
 
-    public Checkout setTotal(Long total) {
+    public CheckoutOutput setTotal(Long total) {
         this.total = total;
         return this;
     }
