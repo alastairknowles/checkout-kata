@@ -18,26 +18,30 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public CheckoutReconciliation checkout(List<CheckoutInput> items) {
+    public CheckoutReconciliation checkout(List<CheckoutInput> inputs) {
         // Maintain a local copy of pricings, so we don't change the price half way through
         Map<String, Pricing> pricingMap = new HashMap<>();
         Map<String, CheckoutOutput> outputMap = new LinkedHashMap<>();
-        items.forEach(item -> {
-            String itemCode = item.getItem();
-            Pricing pricing = getPricingAndMemoizeIfNecessary(itemCode, item, pricingMap);
+        for (CheckoutInput input : inputs) {
+            String item = input.getItem();
+            Pricing pricing = getPricingAndMemoizeIfNecessary(item, input, pricingMap);
+            if (pricing == null) {
+                // ignore unknown items
+                continue;
+            }
 
-            CheckoutOutput output = outputMap.get(itemCode);
+            CheckoutOutput output = outputMap.get(item);
             if (output == null) {
                 Long price = pricing.getPrice();
-                output = new CheckoutOutput().setItem(itemCode).setPrice(price).setQuantity(1L).setTotal(price);
-                outputMap.put(itemCode, output);
+                output = new CheckoutOutput().setItem(item).setPrice(price).setQuantity(1L).setTotal(price);
+                outputMap.put(item, output);
             } else {
                 Long quantity = output.getQuantity();
                 output.setQuantity(quantity + 1);
             }
 
             recomputeCheckoutOutput(output, pricing);
-        });
+        }
 
         // We could compute and reconcile in a single loop but it's not necessary for performance - keep it readable
         return reconcile(outputMap);
