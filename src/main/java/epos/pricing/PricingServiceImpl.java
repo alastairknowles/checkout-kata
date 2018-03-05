@@ -15,7 +15,7 @@ public class PricingServiceImpl implements PricingService {
 
     @Override
     public Pricing getCurrentPricing(String item) {
-        return null;
+        return pricingRepository.getCurrentPricing(item);
     }
 
 }
