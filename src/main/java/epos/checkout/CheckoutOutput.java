@@ -1,5 +1,8 @@
 package epos.checkout;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class CheckoutOutput {
 
     private String item;
@@ -55,6 +58,16 @@ public class CheckoutOutput {
     public CheckoutOutput setTotal(Long total) {
         this.total = total;
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
 }

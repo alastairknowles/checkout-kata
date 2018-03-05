@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
@@ -19,12 +20,19 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     public CheckoutReconciliation checkout(List<CheckoutInput> inputs) {
+        return checkout(inputs, Collections.emptyList());
+    }
+
+    @Override
+    public CheckoutReconciliation checkout(List<CheckoutInput> inputs, List<Pricing> pricings) {
         // Maintain a local copy of pricings, so we don't change the price half way through
-        Map<String, Pricing> pricingMap = new HashMap<>();
+        Map<String, Pricing> pricingMap = pricings.stream()
+                .collect(Collectors.toMap(Pricing::getItem, pricing -> pricing));
+
         Map<String, CheckoutOutput> outputMap = new LinkedHashMap<>();
         for (CheckoutInput input : inputs) {
             String item = input.getItem();
-            Pricing pricing = getPricingAndMemoizeIfNecessary(item, input, pricingMap);
+            Pricing pricing = getPricingAndMemoizeIfNecessary(item, pricingMap);
             if (pricing == null) {
                 // ignore unknown items
                 continue;
@@ -47,15 +55,11 @@ public class CheckoutServiceImpl implements CheckoutService {
         return reconcile(outputMap);
     }
 
-    private Pricing getPricingAndMemoizeIfNecessary(String itemCode, CheckoutInput item,
-                                                    Map<String, Pricing> pricingMap) {
-        Pricing pricing = item.getPricingOverride();
+    private Pricing getPricingAndMemoizeIfNecessary(String item, Map<String, Pricing> pricingMap) {
+        Pricing pricing = pricingMap.get(item);
         if (pricing == null) {
-            pricing = pricingMap.get(itemCode);
-            if (pricing == null) {
-                pricing = pricingService.getCurrentPricing(itemCode);
-                pricingMap.put(itemCode, pricing);
-            }
+            pricing = pricingService.getCurrentPricing(item);
+            pricingMap.put(item, pricing);
         }
 
         return pricing;
@@ -85,7 +89,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         Long offerInstances = Math.floorDiv(quantity, offerMultiple);
 
         Long priceInstances = quantity - (offerInstances * offerMultiple);
-        Long total = (offerPrice * offerInstances) + (price + priceInstances);
+        Long total = (offerPrice * offerInstances) + (price * priceInstances);
         Long discount = naiveTotal - total;
 
         output.setTotal(total);
