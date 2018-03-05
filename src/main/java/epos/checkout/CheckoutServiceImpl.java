@@ -39,6 +39,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             recomputeCheckoutOutput(output, pricing);
         });
 
+        // We could compute and reconcile in a single loop but it's not necessary for performance - keep it readable
         return reconcile(outputMap);
     }
 
