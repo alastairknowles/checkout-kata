@@ -10,4 +10,9 @@ public class PricingServiceUTest {
         Assert.fail();
     }
 
+    @Test
+    public void shouldRetrieveDefaultPricingAndOverrideWithSpecialOffers() {
+        Assert.fail();
+    }
+
 }
