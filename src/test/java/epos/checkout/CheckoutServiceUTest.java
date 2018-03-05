@@ -6,7 +6,7 @@ import org.junit.Test;
 public class CheckoutServiceUTest {
 
     @Test
-    public void shouldCalculateTotal() {
+    public void shouldCalculateTotalUtilisingDefaultPricing() {
         Assert.fail();
     }
 
