@@ -34,7 +34,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             String item = input.getItem();
             Pricing pricing = getPricingAndMemoizeIfNecessary(item, pricingMap);
             if (pricing == null) {
-                // ignore unknown items
+                // Ignore unknown items
                 continue;
             }
 
@@ -79,7 +79,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         Long offerMultiple = offer.getMultiple();
         if (quantity < offerMultiple) {
-            // Insufficient quantity to quality for offer - use naive total
+            // Insufficient quantity to qualify for offer - use naive total
             output.setTotal(naiveTotal);
             return;
         }
