@@ -21,3 +21,23 @@ dependencies {
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.9.1'
     testCompile group: 'org.springframework', name: 'spring-test', version: '5.0.4.RELEASE'
 }
+
+test {
+    testLogging {
+        events = ["passed", "failed", "skipped"]
+        testLogging.showStandardStreams = true
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'main'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+    }
+}
